@@ -1,0 +1,15 @@
+version: '3.1'
+
+services:
+  db:
+    image: mysql
+    container_name: mysql_nest_boilerplate
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/config:/etc/mysql/conf.d
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      time_zone: UTC
