@@ -46,7 +46,7 @@ describe('UserService', () => {
     jwtService = module.get(JwtService);
   });
 
-  describe('createAccount', () => {
+  describe('createUser', () => {
     const createAccountResult = {
       id: 0,
       email: 'user@example.com',
@@ -58,7 +58,7 @@ describe('UserService', () => {
       name: '',
     };
 
-    it('should fail if user already exists', async () => {
+    it('사용자가 이미 있으면 실패', async () => {
       userRepository.findOne.mockReturnValue(createAccountResult);
 
       await expect(service.createUser(createAccountArgs)).rejects.toThrow(ConflictException);
@@ -68,8 +68,8 @@ describe('UserService', () => {
       expect(userRepository.save).toHaveBeenCalledTimes(0);
     });
 
-    it('should create a new user', async () => {
-      userRepository.findOne.mockReturnValue(null);
+    it('사용자 생성', async () => {
+      userRepository.findOne.mockReturnValue(undefined);
       userRepository.create.mockReturnValue(createAccountResult);
       userRepository.save.mockReturnValue(createAccountResult);
 
@@ -95,21 +95,21 @@ describe('UserService', () => {
       password: '',
     };
 
-    it('should fail if user not exists', async () => {
-      userRepository.findOne.mockReturnValue(null);
+    it('사용자가 없으면 실패', async () => {
+      userRepository.findOne.mockReturnValue(undefined);
 
       await expect(service.login(loginArgs)).rejects.toThrow(NotFoundException);
       expect(userRepository.findOne).toBeCalledTimes(1);
     });
 
-    it('should fail if password invalid', async () => {
+    it('패스워드가 틀리면 실패', async () => {
       userRepository.findOne.mockReturnValue(findResult(false));
 
       await expect(service.login(loginArgs)).rejects.toThrow(UnauthorizedException);
       expect(userRepository.findOne).toHaveBeenCalledTimes(1);
     });
 
-    it('should success login', async () => {
+    it('로그인 성공', async () => {
       userRepository.findOne.mockReturnValue(findResult(true));
       jwtService;
 
@@ -120,7 +120,26 @@ describe('UserService', () => {
     });
   });
 
-  // describe('findById', async () => {
+  describe('findById', () => {
+    const id = 0;
+    const findResult = {
+      id,
+      email: 'user@example.com',
+      password: '',
+      name: '',
+    };
 
-  // });
+    it('사용자를 찾을 수 없음', async () => {
+      userRepository.findOne.mockReturnValue(undefined);
+      await expect(service.findById(id)).rejects.toThrow(NotFoundException);
+    });
+
+    it('사용자 찾기 성공', async () => {
+      userRepository.findOne.mockReturnValue(findResult);
+      const findByIdResult = await service.findById(id);
+
+      expect(findByIdResult.id).toEqual(id);
+      expect(userRepository.findOne).toHaveBeenCalledTimes(1);
+    });
+  });
 });

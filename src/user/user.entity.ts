@@ -1,6 +1,7 @@
 import { IsString } from 'class-validator';
 import { BeforeInsert, Column, Entity } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Exclude } from 'class-transformer';
 
 import { CoreEntity } from '~src/modules/database/core.entity';
 
@@ -14,6 +15,7 @@ export class User extends CoreEntity {
   @Column()
   name: string;
 
+  @Exclude({ toPlainOnly: true })
   @IsString()
   @Column()
   password: string;
