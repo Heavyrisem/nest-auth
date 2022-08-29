@@ -2,7 +2,13 @@
     "$schema": "https://json.schemastore.org/swcrc",
     "exclude": [
         "node_modules",
-        "jest.config.ts"
+        "jest.config.ts",
+        "mysql",
+        ".vscode",
+        "coverage",
+        "dist",
+        ".eslintrc.js",
+        "README.md"
     ],
     "jsc": {
         "target": "es2020",
@@ -10,15 +16,23 @@
             "legacyDecorator": true,
             "decoratorMetadata": true
         },
+        "externalHelpers": false,
         "parser": {
             "syntax": "typescript",
             "tsx": false,
             "decorators": true,
             "dynamicImport": false
         },
-        "externalHelpers": false
+        "paths": {
+            "~src/*": [
+                "./src/*"
+            ]
+        },
+        "baseUrl": ".",
+        "loose": true
     },
     "module": {
-        "type": "commonjs"
+        "type": "commonjs",
+        "noInterop": true
     }
 }
