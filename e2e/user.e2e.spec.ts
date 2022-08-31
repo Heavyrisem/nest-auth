@@ -113,7 +113,7 @@ describe('UserModule (e2e)', () => {
     it('잘못된 인증 토큰이면 유저 프로필 조회 실패', async () => {
       return request(app.getHttpServer())
         .get('/user')
-        .set('x-jwt', 'invalidJwtToken')
+        .set('authorization', 'invalidJwtToken')
         .expect(403)
         .expect((res) => {
           expect(res.body.error).toEqual('Forbidden');
@@ -126,7 +126,7 @@ describe('UserModule (e2e)', () => {
 
       return request(app.getHttpServer())
         .get('/user')
-        .set('x-jwt', jwtToken)
+        .set('authorization', jwtToken)
         .expect(200)
         .expect((res) => {
           const user = res.body as User;

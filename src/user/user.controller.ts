@@ -4,11 +4,12 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
+import { CreateRoleDto } from './dto/create-role.dto';
 
 import { AuthUser } from '~src/modules/auth/auth-user.decorator';
 import { AuthGuard } from '~src/modules/auth/auth.guard';
 
-@Controller('/user')
+@Controller('/api/user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -20,6 +21,11 @@ export class UserController {
   @Post('/login')
   async login(@Body() loginUserdto: LoginUserDto) {
     return { token: await this.userService.login(loginUserdto) };
+  }
+
+  @Post('/role/create')
+  async createRole(@Body() createRoleDto: CreateRoleDto) {
+    return { result: await this.userService.createRole(createRoleDto) };
   }
 
   @UseGuards(AuthGuard)

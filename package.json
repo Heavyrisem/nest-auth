@@ -8,7 +8,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "build:swc": "swc ./src -s -d ./dist --config-file .swcrc",
+    "build:swc": "yarn prebuild && swc src -s -d ./dist --config-file .swcrc",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "cross-env NODE_ENV=production nest start",
     "start:dev": "nodemon --watch . --ignore dist -e ts,tsx,js,json --exec 'yarn build:swc && cross-env NODE_ENV=development node dist/main'",
@@ -20,12 +20,11 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest e2e",
-    "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
-    "typeOrm": "yarn build:swc && cross-env NODE_ENV=development yarn typeorm --config ./src/typeOrm.config.ts",
-    "typeorm:run-migrations": "yarn typeOrm migration:run -- -d ./dist/typeOrm.config.js",
-    "typeorm:generate-migration": "yarn typeOrm -- -d ./dist/typeOrm.config.js migration:generate ./migrations/$npm_config_name",
-    "typeorm:create-migration": "yarn typeOrm -- migration:create ./migrations/$npm_config_name",
-    "typeorm:revert-migration": "yarn typeOrm -- -d ./dist/typeOrm.config.js migration:revert"
+    "typeorm": "yarn build:swc && cross-env NODE_ENV=development typeorm-ts-node-commonjs",
+    "typeorm:create-migration": "yarn typeorm migration:create",
+    "typeorm:generate-migration": "yarn typeorm -d ./src/modules/database/typeorm.datasource.ts migration:generate",
+    "typeorm:run-migrations": "yarn typeorm migration:run -d ./src/modules/database/typeorm.datasource.ts",
+    "typeorm:revert-migration": "yarn typeorm -d ./src/modules/database/typeorm.datasource.ts migration:revert"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
@@ -112,5 +111,15 @@
       "/coverage/",
       ".eslintrc.js"
     ]
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "dist",
+      "node_modules",
+      "migrations"
+    ]
+  },
+  "config": {
+    "migrationPath": "./src/modules/database/"
   }
 }
