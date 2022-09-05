@@ -9,10 +9,10 @@ export class JwtService {
   constructor(@Inject(CONFIG_OPTIONS) private readonly options: JwtModuleOptions) {}
 
   sign(payload: object) {
-    return jwt.sign(payload, this.options.privateKey);
+    return jwt.sign(payload, this.options.privateKey, { algorithm: 'RS256' });
   }
 
   verify(token: string) {
-    return jwt.verify(token, this.options.privateKey);
+    return jwt.verify(token, this.options.privateKey, { algorithms: ['RS256'] });
   }
 }

@@ -22,7 +22,7 @@ export class UserModule implements OnApplicationBootstrap {
 
   async onApplicationBootstrap() {
     const findDefaultRole = await this.userRoleRepository.findOne({ where: { name: 'default' } });
-    if (findDefaultRole) return;
+    if (findDefaultRole) return console.log('✔ Skipping Initialize User Data');
 
     console.log('♺ User Data Initalizing');
 

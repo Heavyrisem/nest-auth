@@ -13,15 +13,18 @@ import { JwtMiddleware } from './modules/jwt/jwt.middleware';
 import { JwtModule } from './modules/jwt/jwt.module';
 import { LoggerMiddleware } from './modules/logging/logger.middleware';
 import { UserModule } from './user/user.module';
+import { TestController } from './test/test.controller';
+import { TestModule } from './test/test.module';
 
 @Module({
   imports: [
     ConfigurationModule,
     DatabaseModule,
-    JwtModule.ForRoot({ privateKey: process.env.JWT_SECRET }),
+    JwtModule.ForRoot({ privateKey: Buffer.from(process.env.JWT_SECRET, 'base64').toString() }),
     UserModule,
+    TestModule,
   ],
-  controllers: [],
+  controllers: [TestController],
   providers: [
     {
       provide: APP_INTERCEPTOR,
@@ -37,6 +40,7 @@ import { UserModule } from './user/user.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
+    console.log(Buffer.from(process.env.JWT_SECRET, 'base64').toString());
     consumer.apply(LoggerMiddleware).forRoutes('*');
     consumer.apply(JwtMiddleware).forRoutes('*');
   }
